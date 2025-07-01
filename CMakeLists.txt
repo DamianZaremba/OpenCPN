@@ -462,7 +462,7 @@ if (QT_ANDROID)
   FetchContent_Declare(
           lunasvg
           GIT_REPOSITORY https://github.com/sammycage/lunasvg.git
-          GIT_TAG master  # Specify the desired branch or tag
+          GIT_TAG v3.3.0  # Specify the desired branch or tag
   )
   set(LUNASVG_BUILD_EXAMPLES OFF CACHE INTERNAL "Enable lunasvg samples")
   set(PLUTOVG_BUILD_EXAMPLES OFF CACHE INTERNAL "Enable plutovg samples")
