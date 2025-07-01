@@ -1073,14 +1073,14 @@ target_include_directories(
 )
 if (MSVC)
   target_include_directories(_opencpn INTERFACE ${CMAKE_SOURCE_DIR}/buildwin)
-elseif (APPLE)
-  target_include_directories(
-    _opencpn INTERFACE ${CMAKE_SOURCE_DIR}/buildosx/include
-  )
 elseif (QT_ANDROID)
   target_include_directories(_opencpn INTERFACE ${CMAKE_SOURCE_DIR}/android)
   target_link_libraries(${PACKAGE_NAME} PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/_deps/lunasvg-build/liblunasvg.a")
   target_link_libraries(${PACKAGE_NAME} PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/_deps/lunasvg-build/plutovg/libplutovg.a")
+elseif (APPLE)
+  target_include_directories(
+    _opencpn INTERFACE ${CMAKE_SOURCE_DIR}/buildosx/include
+  )
 endif ()
 add_library(ocpn::opencpn ALIAS _opencpn)
 
