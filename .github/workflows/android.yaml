@@ -1,0 +1,33 @@
+---
+name: Android
+
+on:
+  push:
+    branches:
+      - master
+      - feature/build-android-apk
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: ${{ matrix.architecture }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          #- architecture: armhf
+          - architecture: arm64
+    env:
+      TARGET_ARCHITECTURE: ${{ matrix.architecture }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup base build environment
+        run: ci/github-pre-build.sh
+
+      - name: Configure and Build
+        run: ci/generic-build-android.sh
