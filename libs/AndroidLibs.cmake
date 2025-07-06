@@ -3,7 +3,7 @@
 # linking
 # Also setup preprocessor definitions
 #
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.10)
 
 set(CMAKE_SKIP_RPATH true)
 
@@ -12,26 +12,36 @@ set(
   OCPN_ANDROID_CACHEDIR "${CMAKE_SOURCE_DIR}/cache"
   CACHE STRING "Build download area"
 )
+set(
+  OCPN_ANDROID_RELEASE "v1.2"
+  CACHE STRING "Build release version"
+)
 set(_master_base ${OCPN_ANDROID_CACHEDIR}/OCPNAndroidCoreBuildSupport)
 message(STATUS "Android Build support file base:  ${OCPN_ANDROID_CACHEDIR}/OCPNAndroidCoreBuildSupport")
 
-
-if (TRUE) #(NOT EXISTS ${OCPN_ANDROID_CACHEDIR}/support.zip)
+# Download target release to vxx/OCPNAndroidCoreBuildSupport.zip
+if (NOT EXISTS ${OCPN_ANDROID_CACHEDIR}/${OCPN_ANDROID_RELEASE}/OCPNAndroidCoreBuildSupport.zip)
   file(
     DOWNLOAD
-      https://github.com/bdbcat/OCPNAndroidCoreBuildSupport/releases/download/v1.2/OCPNAndroidCoreBuildSupport.zip
-      ${OCPN_ANDROID_CACHEDIR}/support.zip
-#    EXPECTED_HASH
-#      SHA256=ac36afaf4f026e9b2624a963f5356f5b1fb2c45dec1134209333a8b46fb05ca0
+    https://github.com/bdbcat/OCPNAndroidCoreBuildSupport/releases/download/${OCPN_ANDROID_RELEASE}/OCPNAndroidCoreBuildSupport.zip
+    ${OCPN_ANDROID_CACHEDIR}/${OCPN_ANDROID_RELEASE}/OCPNAndroidCoreBuildSupport.zip
     SHOW_PROGRESS
   )
 endif ()
-if (TRUE) #(NOT EXISTS ${_master_base})
+
+# Extract target release to vxx/OCPNAndroidCoreBuildSupport
+if (NOT EXISTS ${OCPN_ANDROID_CACHEDIR}/${OCPN_ANDROID_RELEASE}/OCPNAndroidCoreBuildSupport)
   execute_process(
-    COMMAND ${CMAKE_COMMAND} -E tar -xzf ${OCPN_ANDROID_CACHEDIR}/support.zip
-    WORKING_DIRECTORY "${OCPN_ANDROID_CACHEDIR}"
+    COMMAND ${CMAKE_COMMAND} -E tar -xzf ${OCPN_ANDROID_CACHEDIR}/OCPNAndroidCoreBuildSupport-${OCPN_ANDROID_RELEASE}.zip
+    WORKING_DIRECTORY "${OCPN_ANDROID_CACHEDIR}/${OCPN_ANDROID_RELEASE}"
   )
 endif ()
+
+# Link vxx/OCPNAndroidCoreBuildSupport to ${_master_base}
+execute_process(
+  COMMAND ln -sf ${OCPN_ANDROID_RELEASE}/OCPNAndroidCoreBuildSupport ${_master_base}
+  WORKING_DIRECTORY "${OCPN_ANDROID_CACHEDIR}"
+)
 
 # testing
 #set(_master_base "/home/dsr/Projects/OCPNAndroidCoreBuildSupport")
