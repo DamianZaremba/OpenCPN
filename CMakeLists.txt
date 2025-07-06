@@ -61,11 +61,11 @@ if ("${OCPN_TARGET_TUPLE}" MATCHES "Android")
   endif ()
 endif ()
 
-if (APPLE)
+if (QT_ANDROID)
+  set(PACKAGE_NAME gorp)
+elseif (APPLE)
   set(PACKAGE_NAME OpenCPN)
   string(REPLACE ";" "," CMAKE_OSX_ARCHITECTURES_COMMA_SEP "${CMAKE_OSX_ARCHITECTURES}")
-elseif (QT_ANDROID)
-  set(PACKAGE_NAME gorp)
 else ()
   set(PACKAGE_NAME opencpn)
 endif ()
@@ -1050,13 +1050,13 @@ endif ()
 
 set(SRCS ${GUI_SRC})
 set(HDRS ${GUI_HDRS})
-if (APPLE)
+if (QT_ANDROID)
+  set_property(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS TRUE)
+  add_library(${PACKAGE_NAME} SHARED ${HDRS} ${SRCS})
+elseif (APPLE)
   add_executable(${PACKAGE_NAME} MACOSX_BUNDLE ${HDRS} ${SRCS})
 elseif (WIN32)
   add_executable(${PACKAGE_NAME} WIN32 ${HDRS} ${SRCS})
-elseif (QT_ANDROID)
-  set_property(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS TRUE)
-  add_library(${PACKAGE_NAME} SHARED ${HDRS} ${SRCS})
 else ()
   add_executable(${PACKAGE_NAME} ${HDRS} ${SRCS})
 endif ()
@@ -1074,16 +1074,16 @@ target_include_directories(
             ${CMAKE_CURRENT_SOURCE_DIR}/resources
             ${CMAKE_CURRENT_SOURCE_DIR}/gui/src/mbtiles
 )
-if (MSVC)
+if (QT_ANDROID)
+  target_include_directories(_opencpn INTERFACE ${CMAKE_SOURCE_DIR}/android)
+  target_link_libraries(${PACKAGE_NAME} PRIVATE lunasvg::lunasvg)
+  target_link_libraries(${PACKAGE_NAME} PRIVATE plutovg::plutovg)
+elseif (MSVC)
   target_include_directories(_opencpn INTERFACE ${CMAKE_SOURCE_DIR}/buildwin)
 elseif (APPLE)
   target_include_directories(
     _opencpn INTERFACE ${CMAKE_SOURCE_DIR}/buildosx/include
   )
-elseif (QT_ANDROID)
-  target_include_directories(_opencpn INTERFACE ${CMAKE_SOURCE_DIR}/android)
-  target_link_libraries(${PACKAGE_NAME} PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/_deps/lunasvg-build/liblunasvg.a")
-  target_link_libraries(${PACKAGE_NAME} PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/_deps/lunasvg-build/plutovg/libplutovg.a")
 endif ()
 add_library(ocpn::opencpn ALIAS _opencpn)
 
@@ -1258,17 +1258,17 @@ if ((NOT OPENGLES_FOUND) AND (NOT QT_ANDROID))
   endif ()
 endif ()
 
-if (MSVC)
+if (QT_ANDROID)
+  target_include_directories(
+    ${PACKAGE_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/android
+  )
+elseif (MSVC)
   target_include_directories(
     ${PACKAGE_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/buildwin
   )
 elseif (APPLE)
   target_include_directories(
     ${PACKAGE_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/buildosx/include
-  )
-elseif (QT_ANDROID)
-  target_include_directories(
-    ${PACKAGE_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/android
   )
 endif ()
 
