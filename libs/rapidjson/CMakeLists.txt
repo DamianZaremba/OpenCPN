@@ -31,6 +31,7 @@ list(APPEND patches
   0011-do_not_include_gtest_src_dir.patch
   0012-Fix-Wclass-memaccess-warnings-errors.patch
   0013-gcc7.patch
+  0014-generic-string-ref-assignment-operator.patch
 )
 
 if (POLICY CMP0135)
